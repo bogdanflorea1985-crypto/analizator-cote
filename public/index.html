@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Analizator Cote</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#030712;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;min-height:100vh;padding:16px}
+    .wrap{max-width:480px;margin:0 auto}
+    h1{text-align:center;font-size:22px;margin-bottom:4px}
+    .sub{text-align:center;color:#6b7280;font-size:12px;margin-bottom:20px}
+    .card{background:#111827;border-radius:12px;padding:16px;margin-bottom:12px;border:2px solid #374151}
+    .card.yellow{border-color:#d97706}
+    .card.green{border-color:#16a34a;background:#052e16}
+    label{display:block;font-size:12px;color:#9ca3af;margin-bottom:4px;margin-top:10px}
+    label:first-child{margin-top:0}
+    input,select{width:100%;background:#1f2937;color:white;border:1px solid #4b5563;border-radius:8px;padding:11px;font-size:14px}
+    button{width:100%;padding:12px;border-radius:10px;font-weight:bold;font-size:14px;border:none;cursor:pointer;margin-top:8px}
+    button:active{opacity:.8}
+    button:disabled{background:#374151!important;color:#6b7280!important;cursor:not-allowed}
+    .btn-y{background:#d97706;color:black}
+    .btn-b{background:#2563eb;color:white}
+    .btn-g{background:#15803d;color:white}
+    .btn-gray{background:#1f2937;color:#9ca3af;border:1px solid #374151}
+    .tabs{display:flex;gap:8px;margin-bottom:16px}
+    .tab{flex:1;padding:10px;border-radius:10px;font-weight:bold;font-size:13px;border:none;cursor:pointer;margin-top:0}
+    .tab.on{background:#2563eb;color:white}
+    .tab.off{background:#1f2937;color:#9ca3af}
+    .tc{display:none}
+    .tc.on{display:block}
+    .prog{background:#111827;border:1px solid #1d4ed8;border-radius:10px;padding:12px;margin-bottom:12px;color:#60a5fa;font-size:13px;display:none}
+    .err{background:#450a0a;border:1px solid #dc2626;border-radius:10px;padding:12px;margin-bottom:12px;color:#fca5a5;font-size:13px;display:none}
+
+    /* UPLOAD */
+    .upload-label{display:block;border:2px dashed #1d4ed8;border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;margin-bottom:12px;background:#0f172a}
+    .upload-label:active{border-color:#3b82f6}
+    #prev{max-height:150px;border-radius:8px;object-fit:contain;display:none}
+
+    /* SELS */
+    .sel-row{border-radius:12px;padding:12px;margin-bottom:8px;border:2px solid}
+    .sel-top{border-color:#16a34a;background:#052e16}
+    .sel-ok{border-color:#4b5563;background:#111827}
+    .sel-no{border-color:#1f2937;background:#0a0a0a;opacity:.5}
+    .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .stitle{font-weight:bold;font-size:13px}
+    .smatch{font-size:11px;color:#6b7280;margin-top:2px}
+    .bdg{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}
+    .b{padding:2px 8px;border-radius:6px;font-size:11px;font-weight:bold}
+    .bb{background:#1d4ed8;color:white}.bo{background:#c2410c;color:white}
+    .by{background:#f59e0b;color:black}.bgr{background:#15803d;color:white}
+    .rmb{background:none;border:none;color:#4b5563;font-size:18px;cursor:pointer;padding:0 4px;width:auto;margin:0}
+    .sstats{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .pc{font-size:12px;font-weight:bold}
+    .pg{color:#4ade80}.pr{color:#f87171}
+    .ss{flex:1}
+    .sl{display:flex;justify-content:space-between;font-size:11px}
+    .sb{background:#374151;border-radius:99px;height:4px;margin-top:2px}
+    .sf{height:4px;border-radius:99px}
+    .sg2{background:#22c55e}.sy2{background:#eab308}.sr2{background:#ef4444}
+    .dtb{background:none;border:none;color:#4b5563;font-size:11px;cursor:pointer;padding:4px 0;margin-top:4px;width:auto}
+    .dc{margin-top:8px;border-top:1px solid #374151;padding-top:8px;display:none}
+    .dr{display:flex;justify-content:space-between;font-size:11px;padding:2px 0}
+    .tg{color:#4ade80}.tr2{color:#f87171}.ty{color:#fbbf24}.tgr{color:#6b7280}
+
+    /* TOP4 */
+    .t4b{background:#052e16;border:2px solid #16a34a;border-radius:12px;padding:16px;margin-bottom:16px}
+    .t4h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .t4t{color:#86efac;font-weight:bold;font-size:14px}
+    .cob{background:#f59e0b;color:black;padding:4px 12px;border-radius:8px;font-weight:bold;font-size:14px}
+    .t4i{background:#14532d;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .rc{background:#16a34a;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0}
+    .til{display:flex;align-items:center;gap:8px}
+    .tin{font-weight:bold;font-size:12px;color:white}
+    .tim{font-size:11px;color:#4ade80}
+    .tir{text-align:right}
+    .tiline{color:#fbbf24;font-weight:bold;font-size:13px}
+    .tis{color:#4ade80;font-size:11px}
+    .wt{color:#fbbf24;font-size:12px;text-align:center;margin-top:4px}
+    .sh2{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .st{color:#9ca3af;font-size:11px;font-weight:bold;text-transform:uppercase}
+    .clb{color:#ef4444;font-size:12px;background:none;border:none;cursor:pointer;padding:0;width:auto;margin:0}
+    .added{background:#111827;border-radius:10px;padding:10px;margin-bottom:12px;border:1px solid #374151;font-size:12px;color:#d1d5db}
+    .ah{color:#9ca3af;font-size:11px;font-weight:bold;margin-bottom:4px}
+    .info{background:#111827;border-radius:12px;padding:16px;border:1px solid #374151;font-size:12px;color:#9ca3af;line-height:1.9}
+    .info .it{color:#d1d5db;font-weight:bold;margin-bottom:8px}
+    .ig{color:#4ade80;margin-top:8px}
+    .chk{width:100%;background:none;border:none;color:#374151;font-size:11px;cursor:pointer;padding:12px 0;margin-top:4px}
+
+    /* TICKETS */
+    .tk{border-radius:12px;padding:14px;margin-bottom:12px;border:2px solid}
+    .tkw{border-color:#16a34a;background:#052e16}
+    .tkl{border-color:#dc2626;background:#450a0a}
+    .tkp{border-color:#374151;background:#111827}
+    .tkh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .tkd{font-weight:bold;font-size:13px}
+    .tki{font-size:11px;color:#6b7280;margin-top:2px}
+    .tks{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+    .tksl{color:#9ca3af;flex:1;padding-right:8px}
+    .vbtn{background:#1d4ed8;color:white;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:bold;border:none;cursor:pointer;width:auto;margin:0}
+    .vbtn:disabled{background:#374151;color:#6b7280}
+    .empty{text-align:center;color:#4b5563;font-size:13px;padding:32px 0}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 Analizator Cote</h1>
+  <p class="sub" id="sub">Configurare necesară</p>
+
+  <!-- SETUP -->
+  <div id="setup">
+    <div class="card yellow">
+      <div style="color:#fbbf24;font-weight:bold;margin-bottom:12px">🔑 Configurare chei API</div>
+      <label>Cheia Claude (anthropic.com → API Keys)</label>
+      <input type="password" id="ckey" placeholder="sk-ant-..."/>
+      <label style="margin-top:10px">Cheia API-Football (api-football.com)</label>
+      <input type="password" id="fkey" placeholder="Cheia ta API-Football"/>
+      <button class="btn-y" onclick="saveKeys()">Salvează și pornește</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main" style="display:none">
+    <div class="tabs">
+      <button class="tab on" id="ta" onclick="sw('analyze')">📊 Analiză</button>
+      <button class="tab off" id="tt" onclick="sw('tickets')">🎫 Bilete</button>
+    </div>
+
+    <div class="tc on" id="ca">
+      <!-- UPLOAD -->
+      <label class="upload-label" for="fi">
+        <div id="uph">
+          <div style="font-size:36px;margin-bottom:8px">📷</div>
+          <div style="color:#60a5fa;font-weight:bold;font-size:16px">Apasă aici pentru a alege poza</div>
+          <div style="color:#4b5563;font-size:12px;margin-top:4px">Screenshot cu cote pentru șuturi</div>
+        </div>
+        <img id="prev"/>
+      </label>
+      <input type="file" id="fi" accept="image/*" style="display:none" onchange="handleFile(event)"/>
+
+      <div class="prog" id="prog"><span id="pt"></span></div>
+      <div class="err" id="errb"><span id="et"></span></div>
+
+      <button class="btn-b" id="abtn" style="display:none;margin-bottom:12px" onclick="analyze()">🔍 Analizează meciul</button>
+
+      <div class="added" id="am" style="display:none">
+        <div class="ah" id="amc"></div>
+        <div id="aml"></div>
+      </div>
+
+      <div id="t4c"></div>
+      <div id="sc"></div>
+
+      <div class="info" id="infob">
+        <div class="it">📋 Cum funcționează:</div>
+        <div>1. Faci screenshot cu cotele pentru șuturi din orice site</div>
+        <div>2. Apeși zona de upload și alegi poza</div>
+        <div>3. App-ul extrage cotele și caută statistici automat</div>
+        <div>4. Repeți pentru fiecare meci dorit</div>
+        <div>5. TOP 4 cele mai sigure selecții — automat</div>
+        <div class="ig">→ Funcționează cu don.ro, Superbet, Betano, orice site</div>
+      </div>
+    </div>
+
+    <div class="tc" id="ct">
+      <div id="tkc"></div>
+    </div>
+
+    <button class="chk" onclick="changeKeys()">Schimbă cheile API</button>
+  </div>
+</div>
+
+<script>
+const VISION_PROMPT = `Analizează această imagine cu cote de pariuri pentru fotbal.
+Extrage echipa gazdă, echipa oaspete și TOATE cotele pentru șuturi.
+Returnează EXCLUSIV JSON:
+{
+  "home_team": "Echipa gazdă",
+  "away_team": "Echipa oaspete",
+  "odds": [
+    { "team": "numele echipei SAU Total meci", "stat_type": "shots_total SAU shots_on_target", "direction": "peste SAU sub", "line": 9.5, "odds_value": 1.45, "label_original": "textul exact" }
+  ]
+}`;
+
+let CLAUDE_KEY = localStorage.getItem("ck") || "";
+let FOOTBALL_KEY = localStorage.getItem("fk") || "";
+let imageB64 = null;
+let allSels = [];
+let addedMatches = [];
+let tickets = JSON.parse(localStorage.getItem("tks") || "[]");
+
+if (CLAUDE_KEY && FOOTBALL_KEY) showMain();
+
+function saveKeys() {
+  const ck = document.getElementById("ckey").value.trim();
+  const fk = document.getElementById("fkey").value.trim();
+  if (!ck || !fk) { alert("Introdu ambele chei!"); return; }
+  localStorage.setItem("ck", ck); localStorage.setItem("fk", fk);
+  CLAUDE_KEY = ck; FOOTBALL_KEY = fk;
+  showMain();
+}
+
+function showMain() {
+  document.getElementById("setup").style.display = "none";
+  document.getElementById("main").style.display = "block";
+  document.getElementById("sub").textContent = "API activ ✓";
+  renderAll();
+}
+
+function changeKeys() {
+  localStorage.removeItem("ck"); localStorage.removeItem("fk");
+  CLAUDE_KEY = ""; FOOTBALL_KEY = "";
+  document.getElementById("main").style.display = "none";
+  document.getElementById("setup").style.display = "block";
+}
+
+function sw(t) {
+  ["analyze","tickets"].forEach(x => {
+    document.getElementById("c" + x[0]).classList.toggle("on", x === t);
+    document.getElementById("t" + x[0]).className = "tab " + (x === t ? "on" : "off");
+  });
+  if (t === "tickets") renderTickets();
+}
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    imageB64 = ev.target.result.split(",")[1];
+    const img = document.getElementById("prev");
+    img.src = ev.target.result;
+    img.style.display = "block";
+    document.getElementById("uph").style.display = "none";
+    document.getElementById("abtn").style.display = "block";
+    hideErr();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── API CALLS via server proxy
+async function callClaude(b64) {
+  const res = await fetch("/api/claude", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-claude-key": CLAUDE_KEY },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514", max_tokens: 1000,
+      messages: [{ role: "user", content: [
+        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: b64 } },
+        { type: "text", text: VISION_PROMPT }
+      ]}]
+    })
+  });
+  const data = await res.json();
+  const text = (data.content || []).map(b => b.type === "text" ? b.text : "").join("");
+  const m = text.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error("Nu s-a extras JSON din imagine");
+  return JSON.parse(m[0]);
+}
+
+async function apiFoot(ep, params) {
+  const url = new URL("/api/football/" + ep, window.location.origin);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.append(k, v));
+  const res = await fetch(url.toString(), { headers: { "x-football-key": FOOTBALL_KEY } });
+  const data = await res.json();
+  if (data.errors && Object.keys(data.errors).length > 0) throw new Error(Object.values(data.errors).join(", "));
+  return data.response || [];
+}
+
+async function searchTeam(name) {
+  const res = await apiFoot("teams", { search: name });
+  return res[0]?.team || null;
+}
+
+async function getMatches(teamId, isHome, count = 6) {
+  const res = await apiFoot("fixtures", { team: teamId, last: 20, status: "FT" });
+  const filtered = res.filter(f => isHome ? f.teams.home.id === teamId : f.teams.away.id === teamId).slice(0, count);
+  const results = [];
+  for (const fix of filtered) {
+    const stats = await apiFoot("fixtures/statistics", { fixture: fix.fixture.id });
+    const ts = stats.find(s => s.team.id === teamId)?.statistics || [];
+    const g = type => ts.find(s => s.type === type)?.value ?? null;
+    results.push({
+      label: (isHome ? fix.teams.away.name : fix.teams.home.name) + " " + (fix.fixture.date?.slice(0,10)||""),
+      fixture_id: fix.fixture.id, opponent_level: "mediu",
+      shots_total: g("Total Shots"), shots_sot: g("Shots on Goal")
+    });
+  }
+  return results;
+}
+
+// ── ANALYZE
+async function analyze() {
+  if (!imageB64) return;
+  showProg("📷 Extrag meciul și cotele din imagine...");
+  hideErr();
+  document.getElementById("abtn").disabled = true;
+  try {
+    const matchData = await callClaude(imageB64);
+    if (!matchData.home_team || !matchData.away_team) throw new Error("Nu s-au identificat echipele.");
+
+    showProg("🔍 Caut echipele în baza de date...");
+    const [ht, at] = await Promise.all([searchTeam(matchData.home_team), searchTeam(matchData.away_team)]);
+    if (!ht) throw new Error(`"${matchData.home_team}" nu a fost găsită.`);
+    if (!at) throw new Error(`"${matchData.away_team}" nu a fost găsită.`);
+
+    showProg(`📊 Statistici ${ht.name} (acasă)...`);
+    const homeM = await getMatches(ht.id, true, 6);
+    showProg(`📊 Statistici ${at.name} (deplasare)...`);
+    const awayM = await getMatches(at.id, false, 6);
+
+    const matchLabel = `${ht.name} vs ${at.name}`;
+    const newSels = (matchData.odds || []).map(odd => {
+      let matches = null, teamId = null;
+      const tn = odd.team.toLowerCase();
+      if (ht.name.toLowerCase().includes(tn) || tn.includes(ht.name.toLowerCase())) { matches = homeM; teamId = ht.id; }
+      else if (at.name.toLowerCase().includes(tn) || tn.includes(at.name.toLowerCase())) { matches = awayM; teamId = at.id; }
+      else if (odd.team === "Total meci") {
+        const len = Math.min(homeM.length, awayM.length);
+        matches = Array.from({length: len}, (_, i) => ({
+          label: homeM[i].label, opponent_level: "mediu",
+          shots_total: (homeM[i].shots_total??0) + (awayM[i]?.shots_total??0),
+          shots_sot: (homeM[i].shots_sot??0) + (awayM[i]?.shots_sot??0)
+        }));
+      }
+      if (!matches) return null;
+      const results = checkOdd(odd, matches);
+      if (!results) return null;
+      const valid = results.filter(r => r.pass !== null);
+      const passCount = valid.filter(r => r.pass).length;
+      const sc = computeScore(odd, results, matches);
+      return { id: Date.now() + Math.random(), matchLabel, odd, results, sc, passCount, total: valid.length, team_id: teamId };
+    }).filter(Boolean);
+
+    allSels = [...allSels, ...newSels];
+    addedMatches = [...addedMatches, matchLabel];
+    imageB64 = null;
+    document.getElementById("prev").style.display = "none";
+    document.getElementById("uph").style.display = "block";
+    document.getElementById("abtn").style.display = "none";
+    document.getElementById("fi").value = "";
+    hideProg(); renderAll();
+  } catch(e) { showErr(e.message); hideProg(); }
+  document.getElementById("abtn").disabled = false;
+}
+
+// ── SCORING
+function checkOdd(odd, matches) {
+  if (!matches) return null;
+  const key = odd.stat_type === "shots_total" ? "shots_total" : "shots_sot";
+  return matches.map(m => {
+    const val = m[key];
+    if (val === null || val === undefined) return { label: m.label, val: null, pass: null };
+    return { label: m.label, val, pass: odd.direction === "peste" ? val > odd.line : val < odd.line };
+  });
+}
+
+function computeScore(odd, results, matches) {
+  let s = 0; const bd = [];
+  const v = results.filter(r => r.pass !== null);
+  const p = v.filter(r => r.pass).length, t = v.length;
+  if (p===t&&t>=8){s+=4;bd.push({l:`${t}/8+ ✓`,p:4,c:"g"});}
+  else if(p===t&&t>=6){s+=2;bd.push({l:`${t}/6 ✓`,p:2,c:"g"});}
+  else if(p===t&&t>=4){s+=1;bd.push({l:`${t}/4 ✓`,p:1,c:"g"});}
+  else bd.push({l:`${p}/${t}`,p:0,c:"r"});
+  const mg = v.filter(r=>r.pass&&r.val!==null).map(r=>odd.direction==="peste"?r.val-odd.line:odd.line-r.val);
+  if (mg.length) {
+    const avg = mg.reduce((a,b)=>a+b,0)/mg.length;
+    if(avg>=5){s+=3;bd.push({l:`Marjă +${avg.toFixed(1)}`,p:3,c:"g"});}
+    else if(avg>=3){s+=2;bd.push({l:`Marjă +${avg.toFixed(1)}`,p:2,c:"g"});}
+    else if(avg>=1.5){s+=1;bd.push({l:`Marjă +${avg.toFixed(1)}`,p:1,c:"y"});}
+    else bd.push({l:`Marjă fragilă`,p:0,c:"r"});
+  }
+  const md = matches?.filter(m=>m.opponent_level==="mediu").length||0;
+  if(md>=3){s+=1;bd.push({l:"Adversari medii",p:1,c:"y"});}
+  else bd.push({l:"Adversari slabi",p:0,c:"r"});
+  const ov = parseFloat(odd.odds_value);
+  if(ov<=1.40){s+=2;bd.push({l:`Cotă ${ov} — piața confirmă`,p:2,c:"g"});}
+  else if(ov<=1.65){s+=1;bd.push({l:`Cotă ${ov} — rezonabilă`,p:1,c:"y"});}
+  else bd.push({l:`Cotă ${ov} — risc`,p:0,c:"r"});
+  return {s, bd, max: 10};
+}
+
+// ── RENDER
+function renderAll() {
+  if (addedMatches.length > 0) {
+    document.getElementById("am").style.display = "block";
+    document.getElementById("amc").textContent = `⚽ ${addedMatches.length} MECIURI ANALIZATE`;
+    document.getElementById("aml").innerHTML = addedMatches.map(m=>`<div>• ${m}</div>`).join("");
+  }
+  const sorted = [...allSels].sort((a,b) => {
+    const a4=a.passCount===a.total&&a.total>=4, b4=b.passCount===b.total&&b.total>=4;
+    if(a4&&!b4) return -1; if(!a4&&b4) return 1; return b.sc.s-a.sc.s;
+  });
+  const v4 = sorted.filter(s=>s.passCount===s.total&&s.total>=4);
+  const top4 = v4.slice(0,4);
+  const t4ids = new Set(top4.map(s=>s.id));
+  const comb = top4.length>0 ? top4.reduce((acc,s)=>acc*parseFloat(s.odd.odds_value),1).toFixed(2) : null;
+
+  const t4c = document.getElementById("t4c");
+  t4c.innerHTML = top4.length>0 ? `<div class="t4b">
+    <div class="t4h"><div class="t4t">🎯 BILET RECOMANDAT</div>${comb?`<div class="cob">Cotă: ${comb}</div>`:""}</div>
+    ${top4.map((s,i)=>`<div class="t4i">
+      <div class="til"><div class="rc">${i+1}</div>
+        <div><div class="tin">${s.odd.stat_type==="shots_total"?"Șut.totale":"Șut.poartă"} — ${s.odd.team}</div>
+        <div class="tim">${s.matchLabel}</div></div></div>
+      <div class="tir"><div class="tiline">${s.odd.direction} ${s.odd.line}</div><div class="tis">${s.sc.s}/${s.sc.max} pct</div></div>
+    </div>`).join("")}
+    ${v4.length<4?`<div class="wt">⚠ Doar ${v4.length} valide. Adaugă mai multe meciuri.</div>`:""}
+    <button class="btn-g" onclick="saveTicket()">💾 Salvează biletul</button>
+  </div>` : "";
+
+  const sc = document.getElementById("sc");
+  sc.innerHTML = sorted.length>0 ? `<div class="sh2"><div class="st">Toate (${sorted.length})</div><button class="clb" onclick="clearAll()">🗑 Șterge tot</button></div>
+    ${sorted.map(s=>rowHtml(s,t4ids.has(s.id),top4.findIndex(t=>t.id===s.id)+1)).join("")}` : "";
+
+  document.getElementById("infob").style.display = allSels.length===0 ? "block" : "none";
+}
+
+function rowHtml(s, isTop4, rank) {
+  const valid = (s.results||[]).filter(r=>r.pass!==null);
+  const p = valid.filter(r=>r.pass).length;
+  const isOk = p===valid.length&&valid.length>=4;
+  const cls = isTop4?"sel-top":isOk?"sel-ok":"sel-no";
+  const pct = Math.round((s.sc.s/s.sc.max)*100);
+  const bc = pct>=70?"sg2":pct>=45?"sy2":"sr2";
+  const tc = pct>=70?"tg":pct>=45?"ty":"tr2";
+  const id = "s"+s.id.toString().replace(".","");
+  return `<div class="sel-row ${cls}">
+    <div class="sh">
+      <div style="display:flex;align-items:flex-start;gap:8px;min-width:0">
+        ${isTop4?`<div class="rc">${rank}</div>`:""}
+        <div style="min-width:0"><div class="stitle">${s.odd.stat_type==="shots_total"?"Șut.totale":"Șut.poartă"} — ${s.odd.team}</div>
+        <div class="smatch">${s.matchLabel}</div></div>
+      </div>
+      <div class="bdg">
+        <span class="b ${s.odd.direction==="peste"?"bb":"bo"}">${s.odd.direction} ${s.odd.line}</span>
+        <span class="b by">${s.odd.odds_value}</span>
+        <button class="rmb" onclick="removeSel('${s.id}')">✕</button>
+      </div>
+    </div>
+    <div class="sstats">
+      <span class="pc ${isOk?"pg":"pr"}">${p}/${valid.length} ✓</span>
+      <div class="ss"><div class="sl"><span class="tgr">Siguranță</span><span class="${tc}" style="font-weight:bold">${s.sc.s}/${s.sc.max}</span></div>
+      <div class="sb"><div class="sf ${bc}" style="width:${pct}%"></div></div></div>
+    </div>
+    <button class="dtb" onclick="tog('${id}')">▼ Detalii</button>
+    <div class="dc" id="dc-${id}">
+      ${(s.results||[]).map(r=>`<div class="dr"><span class="tgr" style="flex:1;padding-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.label}</span>
+        ${r.val!==null?`<span class="${r.pass?"tg":"tr2"}" style="font-weight:bold;flex-shrink:0">${r.val} ${r.pass?"✓":"✗"}</span>`:`<span class="tgr">N/A</span>`}</div>`).join("")}
+      <div style="border-top:1px solid #374151;margin-top:6px;padding-top:6px">
+        ${s.sc.bd.map(b=>`<div class="dr"><span class="${b.c==="g"?"tg":b.c==="y"?"ty":"tgr"}">${b.l}</span><span class="${b.p>0?"tg":"tgr"}" style="font-weight:bold">+${b.p}</span></div>`).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+function tog(id) {
+  const el = document.getElementById("dc-"+id);
+  const btn = el.previousElementSibling;
+  if (!el.style.display||el.style.display==="none"){el.style.display="block";btn.textContent="▲ Ascunde";}
+  else{el.style.display="none";btn.textContent="▼ Detalii";}
+}
+
+function removeSel(id) { allSels=allSels.filter(s=>s.id.toString()!==id.toString()); renderAll(); }
+function clearAll() { allSels=[]; addedMatches=[]; document.getElementById("am").style.display="none"; renderAll(); }
+
+function saveTicket() {
+  const sorted=[...allSels].sort((a,b)=>{const a4=a.passCount===a.total&&a.total>=4,b4=b.passCount===b.total&&b.total>=4;if(a4&&!b4)return -1;if(!a4&&b4)return 1;return b.sc.s-a.sc.s;});
+  const top4=sorted.filter(s=>s.passCount===s.total&&s.total>=4).slice(0,4);
+  if(!top4.length) return;
+  const comb=top4.reduce((acc,s)=>acc*parseFloat(s.odd.odds_value),1).toFixed(2);
+  const tk={id:Date.now(),saved_at:new Date().toISOString(),combined_odds:comb,
+    selections:top4.map(s=>({matchLabel:s.matchLabel,odd:s.odd,team_id:s.team_id})),result:null};
+  tickets=[...tickets,tk];
+  localStorage.setItem("tks",JSON.stringify(tickets));
+  alert("✅ Bilet salvat!");
+}
+
+function renderTickets() {
+  const c=document.getElementById("tkc");
+  if(!tickets.length){c.innerHTML='<div class="empty">Niciun bilet salvat încă.</div>';return;}
+  c.innerHTML=[...tickets].reverse().map(t=>`
+    <div class="tk ${t.result==="won"?"tkw":t.result==="lost"?"tkl":"tkp"}">
+      <div class="tkh">
+        <div><div class="tkd">${new Date(t.saved_at).toLocaleDateString("ro-RO")}</div><div class="tki">${t.selections.length} selecții · cotă ${t.combined_odds}</div></div>
+        ${t.result==="won"?'<span class="b bgr">✅ CÂȘTIGAT</span>':t.result==="lost"?'<span class="b" style="background:#dc2626;color:white">❌ PIERDUT</span>':
+        `<button class="vbtn" onclick="verifyTk(${t.id})" id="vb${t.id}">🔍 Verifică</button>`}
+      </div>
+      ${t.selections.map(s=>`<div class="tks"><div class="tksl">${s.odd.stat_type==="shots_total"?"Șut.totale":"Șut.poartă"} ${s.matchLabel}</div>
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+          <span class="ty">${s.odd.direction} ${s.odd.line}</span>
+          ${s.actual_value!=null?`<span class="${s.verified?"tg":"tr2"}" style="font-weight:bold">→ ${s.actual_value} ${s.verified?"✓":"✗"}</span>`:""}
+        </div></div>`).join("")}
+    </div>`).join("");
+}
+
+async function verifyTk(id) {
+  const btn=document.getElementById("vb"+id);
+  if(btn){btn.disabled=true;btn.textContent="⏳...";}
+  try{
+    const tk=tickets.find(t=>t.id===id); if(!tk) return;
+    const upd=await Promise.all(tk.selections.map(async s=>{
+      if(!s.fixture_id||!s.team_id) return s;
+      const stats=await apiFoot("fixtures/statistics",{fixture:s.fixture_id});
+      const ts=stats.find(x=>x.team.id===s.team_id)?.statistics||[];
+      const g=type=>ts.find(x=>x.type===type)?.value??null;
+      const actual=s.odd.stat_type==="shots_total"?g("Total Shots"):g("Shots on Goal");
+      const pass=actual!==null?(s.odd.direction==="peste"?actual>s.odd.line:actual<s.odd.line):null;
+      return{...s,actual_value:actual,verified:pass};
+    }));
+    const won=upd.every(s=>s.verified===true);
+    tickets=tickets.map(t=>t.id===id?{...t,selections:upd,result:won?"won":"lost"}:t);
+    localStorage.setItem("tks",JSON.stringify(tickets));
+    renderTickets();
+  }catch(e){alert("Eroare: "+e.message);if(btn){btn.disabled=false;btn.textContent="🔍 Verifică";}}
+}
+
+function showProg(m){document.getElementById("prog").style.display="block";document.getElementById("pt").textContent=m;}
+function hideProg(){document.getElementById("prog").style.display="none";}
+function showErr(m){document.getElementById("errb").style.display="block";document.getElementById("et").textContent="❌ "+m;}
+function hideErr(){document.getElementById("errb").style.display="none";}
+</script>
+</body>
+  </html>

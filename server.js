@@ -37,5 +37,10 @@ app.get("/api/football/:endpoint(*)", async (req, res) => {
   }
 });
 
+app.post("/api/test", async (req, res) => {
+  const key = req.headers["x-claude-key"] || "";
+  res.json({ key_length: key.length, key_start: key.substring(0, 10) });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Server pornit pe portul " + PORT));

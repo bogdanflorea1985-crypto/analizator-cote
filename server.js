@@ -25,21 +25,16 @@ app.post("/api/claude", async (req, res) => {
 
 app.get("/api/football/:endpoint(*)", async (req, res) => {
   try {
-    const url = new URL("https://v3.football.api-sports.io/" + req.params.endpoint);
+    const url = new URL("https://api.football-data.org/v4/" + req.params.endpoint);
     Object.entries(req.query).forEach(([k, v]) => url.searchParams.append(k, v));
     const response = await fetch(url.toString(), {
-      headers: { "x-apisports-key": req.headers["x-football-key"] || "" }
+      headers: { "X-Auth-Token": req.headers["x-football-key"] || "" }
     });
     const data = await response.json();
     res.json(data);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
-});
-
-app.post("/api/test", async (req, res) => {
-  const key = req.headers["x-claude-key"] || "";
-  res.json({ key_length: key.length, key_start: key.substring(0, 10) });
 });
 
 const PORT = process.env.PORT || 3000;

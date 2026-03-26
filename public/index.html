@@ -273,7 +273,7 @@ async function searchTeam(name) {
 }
 
 async function getMatches(teamId, isHome, count = 6) {
-  const res = await apiFoot("fixtures", { team: teamId, last: 20, status: "FT" });
+  const res = await apiFoot("fixtures", { team: teamId, season: 2024 });
   const filtered = res.filter(f => isHome ? f.teams.home.id === teamId : f.teams.away.id === teamId).slice(0, count);
   const results = [];
   for (const fix of filtered) {

@@ -152,7 +152,7 @@
 </div>
 
 <script>
-const VISION_PROMPT = `Analizeaza aceasta imagine cu cote pariuri fotbal. Extrage echipa gazda si oaspete cu NUMELE COMPLET IN ENGLEZA (ex: Turkey, Romania, Manchester City - nu abrevieri TUR/ROM). Extrage TOATE cotele pentru suturi. Returneaza EXCLUSIV JSON fara text suplimentar: {"home_team":"Numele complet engleza","away_team":"Numele complet engleza","odds":[{"team":"numele echipei SAU Total meci","stat_type":"shots_total SAU shots_on_target","direction":"peste SAU sub","line":9.5,"odds_value":1.45}]}`;
+const VISION_PROMPT = "Analyze this betting image. Extract home and away team FULL NAMES IN ENGLISH (Turkey, Romania - never abbreviations). Extract ALL shots odds. Return ONLY JSON, no other text: {\"home_team\":\"Turkey\",\"away_team\":\"Romania\",\"odds\":[{\"team\":\"team name\",\"stat_type\":\"shots_total or shots_on_target\",\"direction\":\"peste or sub\",\"line\":9.5,\"odds_value\":1.45}]}";
 
 let CLAUDE_KEY=localStorage.getItem("ck")||"";
 let FOOTBALL_KEY=localStorage.getItem("fk")||"";

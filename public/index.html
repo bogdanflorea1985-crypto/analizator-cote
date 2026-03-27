@@ -217,7 +217,7 @@ async function callClaude(b64){
   const m=text.match(/\{[\s\S]*\}/);
   if(!m)throw new Error("Nu s-a extras JSON. Incearca o poza mai clara.");
   const clean=m[0].replace(/[\u0000-\u001F\u007F]/g,function(c){return c==='\n'||c==='\r'||c==='\t'?c:'';});
-try{return JSON.parse(clean);}catch(e){return JSON.parse(clean.replace(/,(\s*[}\]])/g,'$1'));}
+try{try{return JSON.parse(clean);}catch(e){const f=clean.replace(/[^\x00-\x7F]/g,function(c){return JSON.stringify(c).slice(1,-1);});return JSON.parse(f);}}catch(e){return JSON.parse(clean.replace(/,(\s*[}\]])/g,'$1'));}
 }
 
 async function sleep(ms){return new Promise(r=>setTimeout(r,ms));}

@@ -5,6 +5,12 @@ const app = express();
 app.use(express.json({ limit: "20mb" }));
 app.use(express.static("public"));
 
+function escapeUnicode(str) {
+  return str.replace(/[^\x00-\x7F]/g, function(c) {
+    return "\\u" + ("0000" + c.charCodeAt(0).toString(16)).slice(-4);
+  });
+}
+
 app.post("/api/claude", async (req, res) => {
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -16,41 +22,9 @@ app.post("/api/claude", async (req, res) => {
       },
       body: JSON.stringify(req.body)
     });
-    const data = await response.json();
-    
-    // Extract and clean the text content
-    if (data.content) {
-      data.content = data.content.map(block => {
-        if (block.type === "text") {
-          // Find JSON in the text and re-serialize it cleanly
-          const text = block.text;
-          const start = text.indexOf("{");
-          const end = text.lastIndexOf("}");
-          if (start >= 0 && end >= 0) {
-            const jsonStr = text.slice(start, end + 1);
-            try {
-              // Parse and re-serialize to get clean JSON
-              const parsed = JSON.parse(jsonStr);
-              block.text = JSON.stringify(parsed);
-            } catch(e) {
-              // If parsing fails, clean special chars and try again
-              const clean = jsonStr
-                .replace(/[\u0080-\uFFFF]/g, c => c.normalize ? c : "?")
-                .replace(/,(\s*[}\]])/g, "$1")
-                .replace(/([{,]\s*)(['"])?([a-zA-Z_][a-zA-Z0-9_]*)(['"])?\s*:/g, '$1"$3":');
-              try {
-                const parsed2 = JSON.parse(clean);
-                block.text = JSON.stringify(parsed2);
-              } catch(e2) {
-                block.text = jsonStr;
-              }
-            }
-          }
-        }
-        return block;
-      });
-    }
-    
+    const rawText = await response.text();
+    const escaped = escapeUnicode(rawText);
+    const data = JSON.parse(escaped);
     res.json(data);
   } catch (e) {
     res.status(500).json({ error: e.message });

@@ -17,7 +17,8 @@ app.post("/api/claude", async (req, res) => {
       body: JSON.stringify(req.body)
     });
     const data = await response.json();
-    res.json(data);
+if(data.content){data.content=data.content.map(b=>{if(b.type==="text")b.text=b.text.replace(/[\u0100-\uFFFF]/g,"?");return b;});}
+res.json(data);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

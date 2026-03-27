@@ -16,9 +16,12 @@ app.post("/api/claude", async (req, res) => {
       },
       body: JSON.stringify(req.body)
     });
-    const data = await response.json();
-if(data.content){data.content=data.content.map(b=>{if(b.type==="text")b.text=b.text.replace(/[\u0100-\uFFFF]/g,"?");return b;});}
-res.json(data);
+    const text = await response.text();
+    const clean = text.replace(/[\u0080-\uFFFF]/g, function(c) {
+      return "\\u" + ("0000" + c.charCodeAt(0).toString(16)).slice(-4);
+    });
+    res.set("Content-Type", "application/json");
+    res.send(clean);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

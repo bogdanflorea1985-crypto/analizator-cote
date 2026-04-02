@@ -218,8 +218,7 @@ async function callClaude(img){
       model:"claude-haiku-4-5-20251001",max_tokens:800,
       messages:[{role:"user",content:[
         {type:"image",source:{type:"base64",media_type:"image/jpeg",data:img}},
-        {type:"text",text:"Look at this sports betting image. Find home team and away team names in English (write Turkey not TUR, Romania not ROM). Find all shots betting odds. Reply with ONLY this JSON structure, nothing else before or after: {\"home_team\":\"Turkey\",\"away_team\":\"Romania\",\"odds\":[{\"team\":\"Turkey\",\"stat_type\":\"shots_total\",\"direction\":\"peste\",\"line\":16.5,\"odds_value\":1.84}]}"}
-      ]}]
+        {type:"text",text:"Look at this sports betting image. Read the full team names from the breadcrumb navigation at the top (example: Rayo Vallecano not RVC, Elche not ELC). Never use abbreviations. Find all shots odds. Reply ONLY with this JSON: {\"home_team\":\"Rayo Vallecano\",\"away_team\":\"Elche\",\"odds\":[{\"team\":\"Rayo Vallecano\",\"stat_type\":\"shots_total\",\"direction\":\"peste\",\"line\":15.5,\"odds_value\":1.77}]}";
     })
   });
   var data=await res.json();

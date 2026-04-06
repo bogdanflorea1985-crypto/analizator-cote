@@ -247,8 +247,13 @@ async function findTeamInLeague(name,league){
 
 async function findAfTeam(name){
   var res=await afApi("teams",{search:name});
-  if(res&&res.length>0)return res[0].team;
-  return null;
+  if(!res||!res.length)return null;
+  var nl=name.toLowerCase();
+  var exact=res.find(function(r){return r.team&&r.team.name.toLowerCase()===nl;});
+  if(exact)return exact.team;
+  var partial=res.find(function(r){return r.team&&(r.team.name.toLowerCase().indexOf(nl)>=0||nl.indexOf(r.team.name.toLowerCase())>=0);});
+  if(partial)return partial.team;
+  return res[0].team;
 }
 
 async function getMatches(afTeamId,isHome,count){

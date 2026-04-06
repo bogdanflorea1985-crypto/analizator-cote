@@ -258,7 +258,7 @@ async function findAfTeam(name){
 
 async function getMatches(afTeamId,isHome,count){
   count=count||4;
-  await sleep(400);
+  await sleep(7000);
   var venue=isHome?"home":"away";
   var res=await afApi("fixtures",{team:afTeamId,season:2024,status:"FT"});
   var filtered=res.filter(function(f){
@@ -268,7 +268,7 @@ async function getMatches(afTeamId,isHome,count){
   var results=[];
   for(var i=0;i<filtered.length;i++){
     var f=filtered[i];
-    await sleep(300);
+   await sleep(7000);
     var stats=await afApi("fixtures/statistics",{fixture:f.fixture.id});
     var ts=stats.find(function(s){return s.team&&s.team.id===afTeamId;});
     var getStat=function(type){return ts&&ts.statistics?((ts.statistics.find(function(s){return s.type===type;})||{}).value||null):null;};

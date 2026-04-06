@@ -262,9 +262,11 @@ async function getMatches(afTeamId,isHome,count){
   var venue=isHome?"home":"away";
   var res=await afApi("fixtures",{team:afTeamId,season:2025,status:"FT"});
   var filtered=res.filter(function(f){
-    if(isHome)return f.teams&&f.teams.home&&f.teams.home.id===afTeamId;
-    return f.teams&&f.teams.away&&f.teams.away.id===afTeamId;
-  }).slice(0,count);
+  if(isHome)return f.teams&&f.teams.home&&f.teams.home.id===afTeamId;
+  return f.teams&&f.teams.away&&f.teams.away.id===afTeamId;
+}).sort(function(a,b){
+  return new Date(b.fixture.date)-new Date(a.fixture.date);
+}).slice(0,count);
   var results=[];
   for(var i=0;i<filtered.length;i++){
     var f=filtered[i];

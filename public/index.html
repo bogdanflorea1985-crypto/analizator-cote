@@ -275,7 +275,7 @@ async function findAfTeam(name){
 async function getMatches(afTeamId,isHome,count){
   count=count||4;
   await sleep(7000);
-  var tid=parseInt(afTeamId);console.log("tid:",tid,"leagueId:",window.currentLeagueId);
+  var tid=parseInt(afTeamId);
   var res=await afApi("fixtures",{team:tid,season:2025,status:"FT"});
   var filtered=res.filter(function(f){
     var isCorrectVenue=isHome?(f.teams&&f.teams.home&&f.teams.home.id===tid):(f.teams&&f.teams.away&&f.teams.away.id===tid);
@@ -289,10 +289,22 @@ async function getMatches(afTeamId,isHome,count){
     var f=filtered[i];
     await sleep(7000);
     var stats=await afApi("fixtures/statistics",{fixture:f.fixture.id});
-    var ts=stats.find(function(s){return s.team&&s.team.id===tid;});var tsOpp=stats.find(function(s){return s.team&&s.team.id!==tid;});console.log("tid:",tid,"ts found:",!!ts,"stats count:",stats.length);
-    var getStat=function(type){if(!ts||!ts.statistics)return null;var found=ts.statistics.find(function(s){return s.type===type;});return found?found.value:null;};
+    var ts=stats.find(function(s){return s.team&&s.team.id===tid;});
+    var tsOpp=stats.find(function(s){return s.team&&s.team.id!==tid;});
+    var getStatTeam=function(type,teamStats){
+      if(!teamStats||!teamStats.statistics)return 0;
+      var found=teamStats.statistics.find(function(s){return s.type===type;});
+      return found&&found.value?found.value:0;
+    };
     var opp=isHome?(f.teams.away&&f.teams.away.name):(f.teams.home&&f.teams.home.name);
-    results.push({label:(opp||"Adversar")+" "+(f.fixture.date?f.fixture.date.slice(0,10):""),opponent_level:"mediu",shots_total:function(){var a=getStat("Total Shots")||0;var b=(tsOpp&&tsOpp.statistics&&tsOpp.statistics.find(function(s){return s.type==="Total Shots";})||{}).value||0;return a+b;}(),shots_sot:function(){var a=getStat("Shots on Goal")||0;var b=(tsOpp&&tsOpp.statistics&&tsOpp.statistics.find(function(s){return s.type==="Shots on Goal";})||{}).value||0;return a+b;}(),shots_sot:getStat("Shots on Goal")});
+    var totalShots=getStatTeam("Total Shots",ts)+getStatTeam("Total Shots",tsOpp);
+    var totalSot=getStatTeam("Shots on Goal",ts)+getStatTeam("Shots on Goal",tsOpp);
+    results.push({
+      label:(opp||"Adversar")+" "+(f.fixture.date?f.fixture.date.slice(0,10):""),
+      opponent_level:"mediu",
+      shots_total:totalShots,
+      shots_sot:totalSot
+    });
   }
   return results;
 }

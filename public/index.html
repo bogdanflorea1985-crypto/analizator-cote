@@ -279,7 +279,7 @@ async function getMatches(afTeamId,isHome,count){
   var res=await afApi("fixtures",{team:tid,season:2025,status:"FT"});
   var filtered=res.filter(function(f){
     var isCorrectVenue=isHome?(f.teams&&f.teams.home&&f.teams.home.id===tid):(f.teams&&f.teams.away&&f.teams.away.id===tid);
-    var isLeague=true;
+    var isLeague=f.league&&f.league.id===window.currentLeagueId;
     return isCorrectVenue&&isLeague;
   }).sort(function(a,b){
     return new Date(b.fixture.date)-new Date(a.fixture.date);
@@ -301,6 +301,7 @@ async function analyzeMatch(){
   var htName=document.getElementById("ht").value.trim();
   var atName=document.getElementById("at").value.trim();
   var league=document.getElementById("liga").value;
+  window.currentLeagueId={"SA":135,"PL":39,"BL1":78,"FL1":61,"PD":140,"DED":88,"CL":2,"ELC":40,"PPL":94,"BSA":71}[league]||135;
   var odds=getOdds();
   if(!htName||!atName){showErr("Introdu ambele echipe!");return;}
   if(!odds.length){showErr("Adauga cel putin o cota!");return;}

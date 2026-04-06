@@ -262,27 +262,16 @@ async function fdApi(ep){
 }
 
 async function searchTeamInLeague(name,league){
-  // Search by name
-  var data=await fdApi("teams?name="+encodeURIComponent(name));
-  if(data.teams&&data.teams.length>0){
-    // Try to find team in the specified league first
-    for(var i=0;i<data.teams.length;i++){
-      if(data.teams[i].activeCompetitions){
-        var comps=data.teams[i].activeCompetitions;
-        for(var j=0;j<comps.length;j++){
-          if(comps[j].code===league)return data.teams[i];
-        }
-      }
-    }
-    return data.teams[0];
-  }
-  // Try first word
-  var parts=name.split(" ");
-  if(parts.length>1){
-    var d2=await fdApi("teams?name="+encodeURIComponent(parts[0]));
-    if(d2.teams&&d2.teams.length>0)return d2.teams[0];
-  }
-  return null;
+  var data=await fdApi("competitions/"+league+"/teams");
+  if(!data.teams||!data.teams.length)throw new Error("Nu s-au gasit echipe in liga "+league);
+  var nl=name.toLowerCase();
+  var found=data.teams.find(function(t){
+    return t.name.toLowerCase().indexOf(nl)>=0||
+           nl.indexOf(t.name.toLowerCase())>=0||
+           (t.shortName&&t.shortName.toLowerCase().indexOf(nl)>=0)||
+           (t.tla&&t.tla.toLowerCase()===nl);
+  });
+  return found||null;
 }
 
 async function getMatches(tid,isHome,count){

@@ -246,14 +246,30 @@ async function findTeamInLeague(name,league){
 }
 
 async function findAfTeam(name){
-  var res=await afApi("teams",{search:name});
-  if(!res||!res.length)return null;
-  var nl=name.toLowerCase();
-  var exact=res.find(function(r){return r.team&&r.team.name.toLowerCase()===nl;});
-  if(exact)return exact.team;
-  var partial=res.find(function(r){return r.team&&(r.team.name.toLowerCase().indexOf(nl)>=0||nl.indexOf(r.team.name.toLowerCase())>=0);});
-  if(partial)return partial.team;
-  return res[0].team;
+  var attempts=[name];
+  var parts=name.split(" ");
+  if(parts.length>1){
+    attempts.push(parts[parts.length-1]);
+    attempts.push(parts[0].length>=3?parts[0]:parts[1]);
+  }
+  for(var i=0;i<attempts.length;i++){
+    var q=attempts[i];
+    if(!q||q.length<3)continue;
+    var res=await afApi("teams",{search:q});
+    if(!res||!res.length)continue;
+    var nl=name.toLowerCase();
+    var found=res.find(function(r){
+      return r.team&&(
+        r.team.name.toLowerCase()===nl||
+        r.team.name.toLowerCase().indexOf(nl)>=0||
+        nl.indexOf(r.team.name.toLowerCase())>=0||
+        (r.team.shortName&&nl.indexOf(r.team.shortName.toLowerCase())>=0)
+      );
+    });
+    if(found)return found.team;
+    if(i===attempts.length-1)return res[0].team;
+  }
+  return null;
 }
 
 async function getMatches(afTeamId,isHome,count){

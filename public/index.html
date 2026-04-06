@@ -290,7 +290,7 @@ async function getMatches(afTeamId,isHome,count){
    await sleep(7000);
     var stats=await afApi("fixtures/statistics",{fixture:f.fixture.id});
     var ts=stats.find(function(s){return s.team&&s.team.id===afTeamId;});
-    var getStat=function(type){return ts&&ts.statistics?((ts.statistics.find(function(s){return s.type===type;})||{}).value||null):null;};
+    var getStat=function(type){if(!ts||!ts.statistics)return null;var found=ts.statistics.find(function(s){return s.type===type;});return found?found.value:null;};
     var opp=isHome?(f.teams.away&&f.teams.away.name):(f.teams.home&&f.teams.home.name);
     results.push({
       label:(opp||"Adversar")+" "+(f.fixture.date?f.fixture.date.slice(0,10):""),

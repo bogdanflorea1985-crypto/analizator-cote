@@ -12,13 +12,16 @@ h1{text-align:center;font-size:22px;margin-bottom:4px}
 .sub{text-align:center;color:#6b7280;font-size:12px;margin-bottom:20px}
 .card{background:#111827;border-radius:12px;padding:16px;margin-bottom:12px;border:2px solid #374151}
 .cy{border-color:#d97706}
-lbl{display:block;font-size:12px;color:#9ca3af;margin-bottom:4px;margin-top:10px}
+.cb2{border-color:#1d4ed8}
 input,select{width:100%;background:#1f2937;color:white;border:1px solid #4b5563;border-radius:8px;padding:11px;font-size:14px;margin-top:6px}
-btn,button{width:100%;padding:12px;border-radius:10px;font-weight:bold;font-size:14px;border:none;cursor:pointer;margin-top:8px;display:block}
+label{display:block;font-size:12px;color:#9ca3af;margin-top:10px}
+button{width:100%;padding:12px;border-radius:10px;font-weight:bold;font-size:14px;border:none;cursor:pointer;margin-top:8px}
 button:disabled{background:#374151!important;color:#6b7280!important}
 .by{background:#d97706;color:black}
 .bb{background:#2563eb;color:white}
 .bg{background:#15803d;color:white}
+.br{background:#dc2626;color:white}
+.bsm{width:auto;padding:6px 14px;font-size:12px;margin:0}
 .tabs{display:flex;gap:8px;margin-bottom:16px}
 .tab{flex:1;padding:10px;border-radius:10px;font-weight:bold;font-size:13px;border:none;cursor:pointer;margin-top:0}
 .on{background:#2563eb;color:white}
@@ -26,8 +29,10 @@ button:disabled{background:#374151!important;color:#6b7280!important}
 .tc{display:none}.ac{display:block}
 .prog{background:#111827;border:1px solid #1d4ed8;border-radius:10px;padding:12px;margin-bottom:12px;color:#60a5fa;font-size:13px;display:none}
 .err{background:#450a0a;border:1px solid #dc2626;border-radius:10px;padding:12px;margin-bottom:12px;color:#fca5a5;font-size:13px;display:none}
-.ul{display:block;border:2px dashed #1d4ed8;border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;margin-bottom:12px;background:#0f172a}
-#prev{max-height:150px;border-radius:8px;object-fit:contain;display:none}
+.odd-row{background:#0f172a;border-radius:8px;padding:10px;margin-top:8px;position:relative}
+.odd-row .del{position:absolute;top:8px;right:8px;background:none;border:none;color:#4b5563;font-size:16px;cursor:pointer;width:auto;margin:0;padding:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .sr{border-radius:12px;padding:12px;margin-bottom:8px;border:2px solid}
 .st{border-color:#16a34a;background:#052e16}
 .so{border-color:#4b5563;background:#111827}
@@ -43,7 +48,7 @@ button:disabled{background:#374151!important;color:#6b7280!important}
 .ss{display:flex;align-items:center;gap:10px;margin-top:8px}
 .pc{font-size:12px;font-weight:bold}
 .pg{color:#4ade80}.pr{color:#f87171}
-.sc{flex:1}
+.sc2{flex:1}
 .sl{display:flex;justify-content:space-between;font-size:11px}
 .sb{background:#374151;border-radius:99px;height:4px;margin-top:2px}
 .sf{height:4px;border-radius:99px}
@@ -55,7 +60,7 @@ button:disabled{background:#374151!important;color:#6b7280!important}
 .t4{background:#052e16;border:2px solid #16a34a;border-radius:12px;padding:16px;margin-bottom:16px}
 .t4h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .t4t{color:#86efac;font-weight:bold;font-size:14px}
-.cb{background:#f59e0b;color:black;padding:4px 12px;border-radius:8px;font-weight:bold;font-size:14px}
+.cob{background:#f59e0b;color:black;padding:4px 12px;border-radius:8px;font-weight:bold;font-size:14px}
 .t4i{background:#14532d;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .rc{background:#16a34a;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0}
 .tl{display:flex;align-items:center;gap:8px}
@@ -92,66 +97,94 @@ button:disabled{background:#374151!important;color:#6b7280!important}
 <h1>🎯 Analizator Cote</h1>
 <p class="sub" id="sub">Configurare necesara</p>
 
+<!-- SETUP -->
 <div id="setup">
 <div class="card cy">
 <div style="color:#fbbf24;font-weight:bold;margin-bottom:12px">🔑 Configurare chei API</div>
-<div style="font-size:12px;color:#9ca3af">Cheia Claude (console.anthropic.com)</div>
+<label>Cheia Claude (console.anthropic.com)</label>
 <input type="password" id="ckey" placeholder="sk-ant-..."/>
-<div style="font-size:12px;color:#9ca3af;margin-top:10px">Cheia Football-Data (football-data.org)</div>
+<label>Cheia Football-Data (football-data.org)</label>
 <input type="password" id="fkey" placeholder="Cheia ta football-data.org"/>
 <button class="by" onclick="saveKeys()">Salveaza si porneste</button>
-<div style="margin-top:12px;padding:10px;background:#1f2937;border-radius:8px;font-size:11px;color:#9ca3af;line-height:1.7">
-<div style="color:#fbbf24;font-weight:bold;margin-bottom:4px">Cum obtii cheia Football-Data:</div>
-<div>1. Mergi pe <span style="color:#60a5fa">football-data.org</span></div>
-<div>2. Click "Get API Key" - cont gratuit</div>
-<div>3. Cheia vine pe email imediat</div>
-<div style="color:#4ade80;margin-top:4px">Fara limita zilnica pe planul free!</div>
-</div>
 </div>
 </div>
 
+<!-- MAIN -->
 <div id="main" style="display:none">
 <div class="tabs">
 <button class="tab on" id="ta" onclick="sw('a')">📊 Analiza</button>
 <button class="tab off" id="tt" onclick="sw('t')">🎫 Bilete</button>
 </div>
+
+<!-- TAB ANALIZA -->
 <div class="tc ac" id="ca">
-<label class="ul" for="fi">
-<div id="uph">
-<div style="font-size:36px;margin-bottom:8px">📷</div>
-<div style="color:#60a5fa;font-weight:bold;font-size:16px">Apasa aici pentru a alege poza</div>
-<div style="color:#4b5563;font-size:12px;margin-top:4px">Screenshot cu cote pentru suturi</div>
+
+<!-- FORM MECI -->
+<div class="card cb2">
+<div style="color:#60a5fa;font-weight:bold;font-size:14px;margin-bottom:8px">⚽ Adauga meci nou</div>
+
+<label>Liga</label>
+<select id="liga">
+<option value="PL">Premier League (Anglia)</option>
+<option value="BL1">Bundesliga (Germania)</option>
+<option value="SA">Serie A (Italia)</option>
+<option value="FL1">Ligue 1 (Franta)</option>
+<option value="PD">Primera Division (Spania)</option>
+<option value="DED">Eredivisie (Olanda)</option>
+<option value="CL">Champions League</option>
+<option value="ELC">Championship (Anglia D2)</option>
+<option value="PPL">Primeira Liga (Portugalia)</option>
+<option value="BSA">Campeonato Brasileiro</option>
+</select>
+
+<label>Echipa gazda</label>
+<input type="text" id="ht" placeholder="ex: Arsenal, Bayern Munich..."/>
+
+<label>Echipa oaspete</label>
+<input type="text" id="at" placeholder="ex: Chelsea, Dortmund..."/>
+
+<div style="border-top:1px solid #374151;margin:12px 0 4px 0"></div>
+<div style="color:#9ca3af;font-size:11px;font-weight:bold">COTE PENTRU SUTURI (din poza)</div>
+
+<div id="odds-list"></div>
+
+<button class="bsm" style="background:#1f2937;color:#9ca3af;border:1px solid #374151;width:auto;margin-top:8px" onclick="addOdd()">+ Adauga cota</button>
+<button class="bb" onclick="analyzeMatch()" style="margin-top:12px">🔍 Analizeaza meciul</button>
 </div>
-<img id="prev"/>
-</label>
-<input type="file" id="fi" accept="image/*" style="display:none" onchange="handleFile(event)"/>
+
 <div class="prog" id="prog"><span id="pt"></span></div>
 <div class="err" id="errb"><span id="et"></span></div>
-<button class="bb" id="abtn" style="display:none;margin-bottom:12px" onclick="analyze()">🔍 Analizeaza meciul</button>
+
 <div class="am" id="am" style="display:none">
 <div class="ah" id="amc"></div>
 <div id="aml"></div>
 </div>
+
 <div id="t4c"></div>
 <div id="sc"></div>
+
 <div class="inf" id="infob">
 <div class="it">📋 Cum functioneaza:</div>
-<div>1. Faci screenshot cu cotele pentru suturi</div>
-<div>2. Apesi zona de upload si alegi poza</div>
-<div>3. App-ul extrage cotele si cauta statistici</div>
-<div>4. Repeti pentru fiecare meci dorit</div>
+<div>1. Alegi liga si introduci echipele</div>
+<div>2. Adaugi cotele pentru suturi din poza</div>
+<div>3. App-ul cauta statistici reale automat</div>
+<div>4. Repeti pentru fiecare meci</div>
 <div>5. TOP 4 cele mai sigure selectii automat</div>
 <div class="ig">Functioneaza cu don.ro, Superbet, Betano, orice site</div>
 </div>
 </div>
+
+<!-- TAB BILETE -->
 <div class="tc" id="ct"><div id="tkc"></div></div>
+
 <button class="ck" onclick="changeKeys()">Schimba cheile API</button>
 </div>
 </div>
 
 <script>
 var CK=localStorage.getItem("ck")||"",FK=localStorage.getItem("fk")||"";
-var b64=null,sels=[],matches=[],tickets=JSON.parse(localStorage.getItem("tks")||"[]");
+var sels=[],matches=[],tickets=JSON.parse(localStorage.getItem("tks")||"[]");
+var oddCount=0;
 if(CK&&FK)showMain();
 
 function saveKeys(){
@@ -163,6 +196,7 @@ function showMain(){
   document.getElementById("setup").style.display="none";
   document.getElementById("main").style.display="block";
   document.getElementById("sub").textContent="API activ";
+  addOdd();
   renderAll();
 }
 function changeKeys(){
@@ -178,54 +212,44 @@ function sw(t){
   });
   if(t==="t")renderTickets();
 }
-function handleFile(e){
-  var file=e.target.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    b64=ev.target.result.split(",")[1];
-    var img=document.getElementById("prev");
-    img.src=ev.target.result;img.style.display="block";
-    document.getElementById("uph").style.display="none";
-    document.getElementById("abtn").style.display="block";
-    hideErr();
-  };
-  reader.readAsDataURL(file);
+
+function addOdd(){
+  oddCount++;
+  var id="odd"+oddCount;
+  var div=document.createElement("div");
+  div.className="odd-row";
+  div.id=id;
+  div.innerHTML=
+    '<button class="del" onclick="document.getElementById(\''+id+'\').remove()">✕</button>'+
+    '<label>Echipa / Context</label>'+
+    '<select class="ot">'+
+      '<option value="home">Echipa gazda</option>'+
+      '<option value="away">Echipa oaspete</option>'+
+      '<option value="total">Total meci</option>'+
+    '</select>'+
+    '<div class="row2" style="margin-top:8px">'+
+      '<div><label>Tip</label><select class="os"><option value="shots_total">Suturi totale</option><option value="shots_on_target">Suturi pe poarta</option></select></div>'+
+      '<div><label>Directie</label><select class="od"><option value="peste">Peste</option><option value="sub">Sub</option></select></div>'+
+    '</div>'+
+    '<div class="row2" style="margin-top:8px">'+
+      '<div><label>Linie</label><input type="number" step="0.5" class="ol" placeholder="ex: 9.5"/></div>'+
+      '<div><label>Cota</label><input type="number" step="0.01" class="ov" placeholder="ex: 1.84"/></div>'+
+    '</div>';
+  document.getElementById("odds-list").appendChild(div);
 }
 
-function safeJSON(text){
-  // Remove non-ASCII chars that can break JSON
-  var clean=text.replace(/[^\x00-\x7F]/g,function(c){
-    var code=c.charCodeAt(0);
-    return "\\u"+("0000"+code.toString(16)).slice(-4);
+function getOdds(){
+  var rows=document.querySelectorAll("#odds-list .odd-row");
+  var odds=[];
+  rows.forEach(function(r){
+    var team=r.querySelector(".ot").value;
+    var stat=r.querySelector(".os").value;
+    var dir=r.querySelector(".od").value;
+    var line=parseFloat(r.querySelector(".ol").value);
+    var ov=parseFloat(r.querySelector(".ov").value);
+    if(!isNaN(line)&&!isNaN(ov))odds.push({team:team,stat_type:stat,direction:dir,line:line,odds_value:ov});
   });
-  // Find JSON object
-  var start=clean.indexOf("{"),end=clean.lastIndexOf("}");
-  if(start<0||end<0)throw new Error("No JSON found in response");
-  var json=clean.slice(start,end+1);
-  try{return JSON.parse(json);}
-  catch(e){
-    // Remove trailing commas
-    json=json.replace(/,(\s*[}\]])/g,"$1");
-    return JSON.parse(json);
-  }
-}
-
-async function callClaude(img){
-  var res=await fetch("/api/claude",{
-    method:"POST",
-    headers:{"Content-Type":"application/json","x-claude-key":CK},
-    body:JSON.stringify({
-      model:"claude-sonnet-4-6",max_tokens:800,
-      messages:[{role:"user",content:[
-        {type:"image",source:{type:"base64",media_type:"image/jpeg",data:img}},
-        {type:"text",text:"Look at this sports betting image. Read the full team names from the breadcrumb navigation at the top of the image. Use full names like Rayo Vallecano not RVC, Elche not ELC. Never use abbreviations. Find all shots odds. Reply ONLY with JSON no other text: {\"home_team\":\"Full Name\",\"away_team\":\"Full Name\",\"odds\":[{\"team\":\"team name\",\"stat_type\":\"shots_total or shots_on_target\",\"direction\":\"peste or sub\",\"line\":9.5,\"odds_value\":1.45}]}"}
-      ]}]
-    })
-  });
-  var data=await res.json();
-  if(data.error)throw new Error(data.error.message||JSON.stringify(data.error));
-  var text=(data.content||[]).map(function(b){return b.type==="text"?b.text:"";}).join("");
-  return safeJSON(text);
+  return odds;
 }
 
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
@@ -237,9 +261,22 @@ async function fdApi(ep){
   return data;
 }
 
-async function searchTeam(name){
+async function searchTeamInLeague(name,league){
+  // Search by name
   var data=await fdApi("teams?name="+encodeURIComponent(name));
-  if(data.teams&&data.teams.length>0)return data.teams[0];
+  if(data.teams&&data.teams.length>0){
+    // Try to find team in the specified league first
+    for(var i=0;i<data.teams.length;i++){
+      if(data.teams[i].activeCompetitions){
+        var comps=data.teams[i].activeCompetitions;
+        for(var j=0;j<comps.length;j++){
+          if(comps[j].code===league)return data.teams[i];
+        }
+      }
+    }
+    return data.teams[0];
+  }
+  // Try first word
   var parts=name.split(" ");
   if(parts.length>1){
     var d2=await fdApi("teams?name="+encodeURIComponent(parts[0]));
@@ -250,51 +287,68 @@ async function searchTeam(name){
 
 async function getMatches(tid,isHome,count){
   count=count||4;
-  await sleep(600);
+  await sleep(500);
   var v=isHome?"HOME":"AWAY";
   var data=await fdApi("teams/"+tid+"/matches?status=FINISHED&venue="+v+"&limit=10");
   var ms=(data.matches||[]).slice(0,count);
   var results=[];
   for(var i=0;i<ms.length;i++){
     var m=ms[i];
-    await sleep(300);
+    await sleep(250);
     var isHT=m.homeTeam&&m.homeTeam.id===tid;
     var opp=isHT?(m.awayTeam&&m.awayTeam.name):(m.homeTeam&&m.homeTeam.name);
     var st=null,sot=null;
-    if(m.statistics){var ts=m.statistics[isHT?0:1];if(ts){st=ts.shots&&ts.shots.total!=null?ts.shots.total:null;sot=ts.shots&&ts.shots.onTarget!=null?ts.shots.onTarget:null;}}
+    if(m.statistics){
+      var ts=m.statistics[isHT?0:1];
+      if(ts){
+        st=ts.shots&&ts.shots.total!=null?ts.shots.total:null;
+        sot=ts.shots&&ts.shots.onTarget!=null?ts.shots.onTarget:null;
+      }
+    }
     results.push({label:(opp||"Adversar")+" "+(m.utcDate?m.utcDate.slice(0,10):""),opponent_level:"mediu",shots_total:st,shots_sot:sot});
   }
   return results;
 }
 
-async function analyze(){
-  if(!b64)return;
-  showProg("Extrag meciul si cotele din imagine...");
+async function analyzeMatch(){
+  var htName=document.getElementById("ht").value.trim();
+  var atName=document.getElementById("at").value.trim();
+  var league=document.getElementById("liga").value;
+  var odds=getOdds();
+  if(!htName||!atName){showErr("Introdu ambele echipe!");return;}
+  if(!odds.length){showErr("Adauga cel putin o cota!");return;}
+
+  showProg("Caut echipele in baza de date...");
   hideErr();
-  document.getElementById("abtn").disabled=true;
+  document.querySelector("#ca .bb").disabled=true;
+
   try{
-    var md=await callClaude(b64);
-    if(!md.home_team||!md.away_team)throw new Error("Nu s-au identificat echipele.");
-    showProg("Caut echipele in baza de date...");
-    var ht=await searchTeam(md.home_team);
+    var ht=await searchTeamInLeague(htName,league);
     await sleep(500);
-    var at=await searchTeam(md.away_team);
-    if(!ht)throw new Error('"'+md.home_team+'" nu a fost gasita.');
-    if(!at)throw new Error('"'+md.away_team+'" nu a fost gasita.');
+    var at=await searchTeamInLeague(atName,league);
+    if(!ht)throw new Error('"'+htName+'" nu a fost gasita. Verifica numele echipei.');
+    if(!at)throw new Error('"'+atName+'" nu a fost gasita. Verifica numele echipei.');
+
     showProg("Statistici "+ht.name+" (acasa)...");
     var hm=await getMatches(ht.id,true,4);
     showProg("Statistici "+at.name+" (deplasare)...");
     var am2=await getMatches(at.id,false,4);
+
     var ml=ht.name+" vs "+at.name;
-    var ns=(md.odds||[]).map(function(odd){
+    var ns=odds.map(function(odd){
       var mx=null,tid2=null;
-      var tn=odd.team.toLowerCase();
-      if(ht.name.toLowerCase().indexOf(tn)>=0||tn.indexOf(ht.name.toLowerCase())>=0){mx=hm;tid2=ht.id;}
-      else if(at.name.toLowerCase().indexOf(tn)>=0||tn.indexOf(at.name.toLowerCase())>=0){mx=am2;tid2=at.id;}
-      else if(odd.team==="Total match"||odd.team==="Total meci"){
+      if(odd.team==="home"){mx=hm;tid2=ht.id;}
+      else if(odd.team==="away"){mx=am2;tid2=at.id;}
+      else if(odd.team==="total"){
         var len=Math.min(hm.length,am2.length);
         mx=[];
-        for(var i=0;i<len;i++){mx.push({label:hm[i].label,opponent_level:"mediu",shots_total:(hm[i].shots_total||0)+(am2[i]?am2[i].shots_total||0:0),shots_sot:(hm[i].shots_sot||0)+(am2[i]?am2[i].shots_sot||0:0)});}
+        for(var i=0;i<len;i++){
+          mx.push({
+            label:hm[i].label,opponent_level:"mediu",
+            shots_total:(hm[i].shots_total||0)+(am2[i]?am2[i].shots_total||0:0),
+            shots_sot:(hm[i].shots_sot||0)+(am2[i]?am2[i].shots_sot||0:0)
+          });
+        }
       }
       if(!mx)return null;
       var res=checkOdd(odd,mx);if(!res)return null;
@@ -303,16 +357,20 @@ async function analyze(){
       var sc=compScore(odd,res,mx);
       return{id:Date.now()+Math.random(),matchLabel:ml,odd:odd,results:res,sc:sc,passCount:pc,total:v.length,team_id:tid2};
     }).filter(Boolean);
+
     sels=sels.concat(ns);
     matches.push(ml);
-    b64=null;
-    document.getElementById("prev").style.display="none";
-    document.getElementById("uph").style.display="block";
-    document.getElementById("abtn").style.display="none";
-    document.getElementById("fi").value="";
+
+    // Reset form
+    document.getElementById("ht").value="";
+    document.getElementById("at").value="";
+    document.getElementById("odds-list").innerHTML="";
+    oddCount=0;
+    addOdd();
+
     hideProg();renderAll();
   }catch(e){showErr(e.message);hideProg();}
-  document.getElementById("abtn").disabled=false;
+  document.querySelector("#ca .bb").disabled=false;
 }
 
 function checkOdd(odd,mx){
@@ -364,12 +422,15 @@ function renderAll(){
   var comb=top4.length>0?top4.reduce(function(acc,s){return acc*parseFloat(s.odd.odds_value);},1).toFixed(2):null;
   var t4c=document.getElementById("t4c");
   if(top4.length>0){
-    t4c.innerHTML='<div class="t4"><div class="t4h"><div class="t4t">BILET RECOMANDAT</div>'+(comb?'<div class="cb">Cota: '+comb+'</div>':"")+
-    '</div>'+top4.map(function(s,i){return'<div class="t4i"><div class="tl"><div class="rc">'+(i+1)+'</div>'+
-    '<div><div class="tn">'+(s.odd.stat_type==="shots_total"?"Sut.totale":"Sut.poarta")+" - "+s.odd.team+'</div>'+
-    '<div class="tms">'+s.matchLabel+'</div></div></div>'+
-    '<div class="tr2"><div class="tln">'+s.odd.direction+" "+s.odd.line+'</div>'+
-    '<div class="tsc">'+s.sc.s+"/"+s.sc.max+' pct</div></div></div>';}).join("")+
+    t4c.innerHTML='<div class="t4"><div class="t4h"><div class="t4t">BILET RECOMANDAT</div>'+(comb?'<div class="cob">Cota: '+comb+'</div>':"")+
+    '</div>'+top4.map(function(s,i){
+      var tn=s.odd.team==="home"?s.matchLabel.split(" vs ")[0]:s.odd.team==="away"?s.matchLabel.split(" vs ")[1]:"Total";
+      return'<div class="t4i"><div class="tl"><div class="rc">'+(i+1)+'</div>'+
+      '<div><div class="tn">'+(s.odd.stat_type==="shots_total"?"Sut.totale":"Sut.poarta")+" - "+tn+'</div>'+
+      '<div class="tms">'+s.matchLabel+'</div></div></div>'+
+      '<div class="tr2"><div class="tln">'+s.odd.direction+" "+s.odd.line+'</div>'+
+      '<div class="tsc">'+s.sc.s+"/"+s.sc.max+' pct</div></div></div>';
+    }).join("")+
     (v4.length<4?'<div class="wt">Doar '+v4.length+' valide. Adauga mai multe meciuri.</div>':"")+
     '<button class="bg" onclick="saveTicket()">Salveaza biletul</button></div>';
   }else{t4c.innerHTML="";}
@@ -390,15 +451,16 @@ function rowHtml(s,isTop,rank){
   var bc=pct>=70?"s1":pct>=45?"s2":"s3";
   var tc2=pct>=70?"tg":pct>=45?"ty":"tr";
   var id="x"+s.id.toString().replace(".","");
+  var tn=s.odd.team==="home"?s.matchLabel.split(" vs ")[0]:s.odd.team==="away"?s.matchLabel.split(" vs ")[1]:"Total";
   return'<div class="'+cls+'"><div class="sh"><div style="display:flex;align-items:flex-start;gap:8px;min-width:0">'+
   (isTop?'<div class="rc">'+rank+'</div>':"")+
-  '<div><div class="ti">'+(s.odd.stat_type==="shots_total"?"Sut.totale":"Sut.poarta")+" - "+s.odd.team+'</div>'+
+  '<div><div class="ti">'+(s.odd.stat_type==="shots_total"?"Sut.totale":"Sut.poarta")+" - "+tn+'</div>'+
   '<div class="tm">'+s.matchLabel+'</div></div></div>'+
   '<div class="bd"><span class="bx '+(s.odd.direction==="peste"?"b1":"b2")+'">'+s.odd.direction+" "+s.odd.line+'</span>'+
   '<span class="bx b3">'+s.odd.odds_value+'</span>'+
   '<button class="rb" onclick="remSel(\''+s.id+'\')">x</button></div></div>'+
   '<div class="ss"><span class="pc '+(ok?"pg":"pr")+'">'+p+"/"+valid.length+' OK</span>'+
-  '<div class="sc"><div class="sl"><span class="tgr">Siguranta</span><span class="'+tc2+'" style="font-weight:bold">'+s.sc.s+"/"+s.sc.max+'</span></div>'+
+  '<div class="sc2"><div class="sl"><span class="tgr">Siguranta</span><span class="'+tc2+'" style="font-weight:bold">'+s.sc.s+"/"+s.sc.max+'</span></div>'+
   '<div class="sb"><div class="sf '+bc+'" style="width:'+pct+'%"></div></div></div></div>'+
   '<button class="db" onclick="tog(\''+id+'\')">Detalii</button>'+
   '<div class="dc" id="'+id+'">'+
@@ -437,9 +499,11 @@ function renderTickets(){
     '<div class="tkh"><div><div class="tkd">'+new Date(t.saved_at).toLocaleDateString("ro-RO")+'</div>'+
     '<div class="tki">'+t.selections.length+' selectii - cota '+t.combined_odds+'</div></div>'+
     (t.result==="won"?'<span class="bx b4">CASTIGAT</span>':t.result==="lost"?'<span class="bx" style="background:#dc2626;color:white">PIERDUT</span>':
-    '<button class="vb" id="vb'+t.id+'" onclick="markResult('+t.id+')">Marcheaza rezultat</button>')+
-    '</div>'+t.selections.map(function(s){return'<div class="tks"><div class="tksl">'+(s.odd.stat_type==="shots_total"?"Sut.totale":"Sut.poarta")+" "+s.matchLabel+'</div>'+
-    '<span class="ty">'+s.odd.direction+" "+s.odd.line+'</span></div>';}).join("")+'</div>';
+    '<button class="vb" onclick="markResult('+t.id+')">Marcheaza rezultat</button>')+
+    '</div>'+t.selections.map(function(s){
+      return'<div class="tks"><div class="tksl">'+(s.odd.stat_type==="shots_total"?"Sut.totale":"Sut.poarta")+" "+s.matchLabel+'</div>'+
+      '<span class="ty">'+s.odd.direction+" "+s.odd.line+'</span></div>';
+    }).join("")+'</div>';
   }).join("");
 }
 

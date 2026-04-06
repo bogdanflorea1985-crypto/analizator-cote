@@ -292,7 +292,7 @@ async function getMatches(afTeamId,isHome,count){
     var ts=stats.find(function(s){return s.team&&s.team.id===tid;});var tsOpp=stats.find(function(s){return s.team&&s.team.id!==tid;});console.log("tid:",tid,"ts found:",!!ts,"stats count:",stats.length);
     var getStat=function(type){if(!ts||!ts.statistics)return null;var found=ts.statistics.find(function(s){return s.type===type;});return found?found.value:null;};
     var opp=isHome?(f.teams.away&&f.teams.away.name):(f.teams.home&&f.teams.home.name);
-    results.push({label:(opp||"Adversar")+" "+(f.fixture.date?f.fixture.date.slice(0,10):""),opponent_level:"mediu",shots_total_team:getStat("Total Shots"),shots_sot_team:getStat("Shots on Goal"),shots_total:(getStat("Total Shots")||0)+((tsOpp&&tsOpp.statistics&&tsOpp.statistics.find(function(s){return s.type==="Total Shots";})||{}).value||0),shots_sot:(getStat("Shots on Goal")||0)+((tsOpp&&tsOpp.statistics&&tsOpp.statistics.find(function(s){return s.type==="Shots on Goal";})||{}).value||0),shots_sot:getStat("Shots on Goal")});
+    results.push({label:(opp||"Adversar")+" "+(f.fixture.date?f.fixture.date.slice(0,10):""),opponent_level:"mediu",shots_total:function(){var a=getStat("Total Shots")||0;var b=(tsOpp&&tsOpp.statistics&&tsOpp.statistics.find(function(s){return s.type==="Total Shots";})||{}).value||0;return a+b;}(),shots_sot:function(){var a=getStat("Shots on Goal")||0;var b=(tsOpp&&tsOpp.statistics&&tsOpp.statistics.find(function(s){return s.type==="Shots on Goal";})||{}).value||0;return a+b;}(),shots_sot:getStat("Shots on Goal")});
   }
   return results;
 }

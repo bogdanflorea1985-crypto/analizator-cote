@@ -308,7 +308,7 @@ async function analyzeMatch(){
     showProg("Caut statistici pentru "+fdHt.name+"...");
     var afHt=await findAfTeam(fdHt.shortName||fdHt.name);
     await sleep(300);
-    var afAt=await findAfTeam("Como");
+    var afAt=await findAfTeam(fdAt.name.split(" ")[0]);
     if(!afHt)throw new Error('Statistici negasite pentru "'+fdHt.name+'"');
     if(!afAt)throw new Error('Statistici negasite pentru "'+fdAt.name+'"');
 
